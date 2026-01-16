@@ -9,3 +9,6 @@
 
   Run `npm run dev` to start the development server.
   # Tools-Page-Design
+  
+  Run 'cd band-info-backend
+      go run main.go' to start the backend server
