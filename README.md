@@ -7,8 +7,7 @@
 
   Run `npm i` to install the dependencies.
 
-  Run `npm run dev` to start the development server.
-  # Tools-Page-Design
+  Run `npm run dev` to start the development server
   
   Run 'cd band-info-backend
       go run main.go' to start the backend server
