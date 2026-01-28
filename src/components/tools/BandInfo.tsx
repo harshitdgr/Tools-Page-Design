@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
+import '../../../css/BandInfo.css';
 
 interface BandData {
   band: string;
@@ -161,6 +162,7 @@ export function BandInfo() {
     setSelectedBand('');
     setBandSearchTerm('');
     setAdvancedQuery('');
+    // Reset search results to show all bands (Show All view)
     setSearchResults([...allBands]);
     setHasSearched(true);
     setShowAdvancedQuery(false);
@@ -183,15 +185,15 @@ export function BandInfo() {
   };
 
   return (
-    <div className="h-full flex flex-col relative">
+    <div className="band-info-container">
       {/* Search Form */}
-      <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm p-6 mb-6">
-        <div className="space-y-4">
-          <div className="grid grid-cols-12 gap-4">
+      <div className="search-form">
+        <div className="search-form-inner">
+          <div className="search-grid">
             {/* RAT Dropdown */}
-            <div className="col-span-2">
-              <label className="block text-sm text-gray-700 dark:text-gray-300 mb-2">
-                RAT <span className="text-red-500">*</span>
+            <div className="rat-dropdown-wrapper">
+              <label className="form-label">
+                RAT <span className="label-required">*</span>
               </label>
               <select
                 value={rat}
@@ -200,7 +202,7 @@ export function BandInfo() {
                   setSelectedBand('');
                   setBandSearchTerm('');
                 }}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                className="form-select"
                 required
               >
                 <option value="NR">NR</option>
@@ -209,9 +211,9 @@ export function BandInfo() {
             </div>
 
             {/* Band Searchable Dropdown */}
-            <div className="col-span-4 relative">
-              <label className="block text-sm text-gray-700 dark:text-gray-300 mb-2">Band</label>
-              <div className="relative">
+            <div className="band-dropdown-wrapper">
+              <label className="form-label">Band</label>
+              <div className="band-search-relative">
                 <input
                   type="text"
                   value={selectedBand ? allBands.find((b: BandData) => b.band === selectedBand)?.band + ' - ' + allBands.find((b: BandData) => b.band === selectedBand)?.bandName : bandSearchTerm}
@@ -222,7 +224,7 @@ export function BandInfo() {
                   }}
                   onFocus={() => setShowBandDropdown(true)}
                   placeholder="Search band..."
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder:text-gray-500 dark:placeholder:text-gray-400"
+                  className="band-search-input"
                 />
                 {selectedBand && (
                   <button
@@ -231,7 +233,7 @@ export function BandInfo() {
                       setSelectedBand('');
                       setBandSearchTerm('');
                     }}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300"
+                    className="band-clear-button"
                   >
                     ✕
                   </button>
@@ -241,10 +243,10 @@ export function BandInfo() {
               {showBandDropdown && !selectedBand && (
                 <>
                   <div
-                    className="fixed inset-0 z-10"
+                    className="band-dropdown-overlay"
                     onClick={() => setShowBandDropdown(false)}
                   />
-                  <div className="absolute z-20 w-full mt-1 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg shadow-lg max-h-60 overflow-auto">
+                  <div className="band-dropdown-menu">
                     {filteredBandOptions.length > 0 ? (
                       filteredBandOptions.map((band) => (
                         <button
@@ -255,14 +257,14 @@ export function BandInfo() {
                             setBandSearchTerm('');
                             setShowBandDropdown(false);
                           }}
-                          className="w-full px-4 py-2 text-left hover:bg-blue-50 dark:hover:bg-gray-600 text-sm"
+                          className="band-option-button"
                         >
-                          <span className="text-gray-900 dark:text-gray-100">{band.band}</span>
-                          <span className="text-gray-500 dark:text-gray-400 ml-2">- {band.bandName}</span>
+                          <span className="band-option-label">{band.band}</span>
+                          <span className="band-option-subtext">- {band.bandName}</span>
                         </button>
                       ))
                     ) : (
-                      <div className="px-4 py-2 text-sm text-gray-500 dark:text-gray-400">No bands found</div>
+                      <div className="band-no-results">No bands found</div>
                     )}
                   </div>
                 </>
@@ -270,15 +272,11 @@ export function BandInfo() {
             </div>
 
             {/* Action Buttons */}
-            <div className="col-span-6 flex items-end gap-2">
+            <div className="action-buttons-wrapper">
               <button
                 type="button"
                 onClick={() => setShowAdvancedQuery(!showAdvancedQuery)}
-                className={`px-4 py-2 rounded-lg transition-colors ${
-                  showAdvancedQuery
-                    ? 'bg-purple-600 dark:bg-purple-600 text-white'
-                    : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600'
-                }`}
+                className={`btn-advanced-query ${showAdvancedQuery ? 'active' : ''}`}
               >
                 Advanced Query
               </button>
@@ -287,7 +285,7 @@ export function BandInfo() {
                 <button
                   type="button"
                   onClick={handleApplyAdvancedQuery}
-                  className="px-6 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors"
+                  className="btn-apply"
                 >
                   Apply
                 </button>
@@ -296,9 +294,9 @@ export function BandInfo() {
               <button
                 type="button"
                 onClick={handleClear}
-                className="px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors flex items-center gap-2"
+                className="btn-clear"
               >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="btn-clear-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
                 Clear
@@ -308,23 +306,23 @@ export function BandInfo() {
 
           {/* Advanced Query Input */}
           {showAdvancedQuery && (
-            <div className="pt-2">
+            <div className="advanced-query-section">
               <input
                 type="text"
                 value={advancedQuery}
                 onChange={(e) => setAdvancedQuery(e.target.value)}
                 placeholder="e.g., Mode == 'TDD' && Bandwidth == 100"
-                className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder:text-gray-500 dark:placeholder:text-gray-400"
+                className="advanced-query-input"
               />
-              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+              <p className="advanced-query-help">
                 Supported filters: Mode, Bandwidth, GeoArea, Release
               </p>
             </div>
           )}
 
           {/* Quick Filters */}
-          <div className="flex gap-2 items-center flex-wrap">
-            <span className="text-sm text-gray-600 dark:text-gray-400 font-medium">Quick Filters:</span>
+          <div className="quick-filters-section">
+            <span className="quick-filters-label">Quick Filters:</span>
             <button
               type="button"
               onClick={(e) => {
@@ -332,17 +330,7 @@ export function BandInfo() {
                 e.stopPropagation();
                 handleQuickFilter('FDD');
               }}
-              style={modeFilter === 'FDD' ? {
-                backgroundColor: '#059669',
-                color: 'white',
-                borderColor: '#047857',
-                boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'
-              } : {
-                backgroundColor: '#d1fae5',
-                color: '#059669',
-                borderColor: '#a7f3d0'
-              }}
-              className="px-4 py-2 rounded-lg transition-all font-medium border-2 cursor-pointer hover:opacity-90"
+              className={`filter-button ${modeFilter === 'FDD' ? 'filter-button-fdd-active' : 'filter-button-fdd-inactive'}`}
             >
               FDD Only
             </button>
@@ -353,17 +341,7 @@ export function BandInfo() {
                 e.stopPropagation();
                 handleQuickFilter('TDD');
               }}
-              style={modeFilter === 'TDD' ? {
-                backgroundColor: '#7c3aed',
-                color: 'white',
-                borderColor: '#6d28d9',
-                boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'
-              } : {
-                backgroundColor: '#ede9fe',
-                color: '#7c3aed',
-                borderColor: '#e9d5ff'
-              }}
-              className="px-4 py-2 rounded-lg transition-all font-medium border-2 cursor-pointer hover:opacity-90"
+              className={`filter-button ${modeFilter === 'TDD' ? 'filter-button-tdd-active' : 'filter-button-tdd-inactive'}`}
             >
               TDD Only
             </button>
@@ -374,17 +352,7 @@ export function BandInfo() {
                 e.stopPropagation();
                 handleQuickFilter(null);
               }}
-              style={modeFilter === null ? {
-                backgroundColor: '#4b5563',
-                color: 'white',
-                borderColor: '#374151',
-                boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'
-              } : {
-                backgroundColor: '#f3f4f6',
-                color: '#4b5563',
-                borderColor: '#d1d5db'
-              }}
-              className="px-4 py-2 rounded-lg transition-all font-medium border-2 cursor-pointer hover:opacity-90"
+              className={`filter-button ${modeFilter === null ? 'filter-button-all-active' : 'filter-button-all-inactive'}`}
             >
               Show All
             </button>
@@ -393,85 +361,69 @@ export function BandInfo() {
       </div>
 
       {/* Results */}
-      <div className="flex-1 overflow-auto">
+      <div className="results-section">
         {isLoading && (
-          <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-8 text-center text-gray-500 dark:text-gray-400">
-            <div className="inline-block animate-spin">
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className="loading-container">
+            <div className="loading-spinner">
+              <svg className="loading-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
               </svg>
             </div>
-            <p className="mt-2">Loading band data...</p>
+            <p className="loading-text">Loading band data...</p>
           </div>
         )}
 
         {error && (
-          <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-700 rounded-lg p-4 text-red-700 dark:text-red-300">
-            <p className="font-semibold">Error loading band data</p>
-            <p className="text-sm mt-1">{error}</p>
-            <p className="text-sm mt-2">Make sure the Go backend server is running on http://localhost:8080</p>
+          <div className="error-container">
+            <p className="error-title">Error loading band data</p>
+            <p className="error-message">{error}</p>
+            <p className="error-hint">Make sure the Go backend server is running on http://localhost:8080</p>
           </div>
         )}
 
         {!isLoading && !error && hasSearched && (
           <>
             {searchResults.length === 0 ? (
-              <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-8 text-center text-gray-500 dark:text-gray-400">
+              <div className="empty-state">
                 No results found matching your search criteria.
               </div>
             ) : (
-              <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
-                <div className="overflow-auto">
-                  <table className="w-full">
-                    <thead className="bg-gray-50 dark:bg-gray-700 sticky top-0">
+              <div className="results-table-container">
+                <div className="results-table-wrapper">
+                  <table className="results-table">
+                    <thead className="results-table-head">
                       <tr>
-                        <th className="px-6 py-3 text-left text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                          Band
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                          Band Name
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                          Mode
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                          Geo Area
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                          3GPP Release
-                        </th>
+                        <th className="results-table-header-cell">Band</th>
+                        <th className="results-table-header-cell">Band Name</th>
+                        <th className="results-table-header-cell">Mode</th>
+                        <th className="results-table-header-cell">Geo Area</th>
+                        <th className="results-table-header-cell">3GPP Release</th>
                       </tr>
                     </thead>
-                    <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                    <tbody className="results-table-body">
                       {searchResults.map((band) => (
                         <tr 
                           key={band.band} 
                           onClick={() => handleRowClick(band)}
-                          className="hover:bg-blue-50 dark:hover:bg-gray-700 cursor-pointer transition-colors"
+                          className="results-table-row"
                         >
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200">
+                          <td className="results-table-cell">
+                            <span className="results-table-band-badge">
                               {band.band}
                             </span>
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">
+                          <td className="results-table-cell results-table-text">
                             {band.bandName}
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            <span
-                              className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs ${
-                                band.mode === 'FDD'
-                                  ? 'bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200'
-                                  : 'bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200'
-                              }`}
-                            >
+                          <td className="results-table-cell">
+                            <span className={`results-table-mode-badge ${band.mode === 'FDD' ? 'results-table-mode-fdd' : 'results-table-mode-tdd'}`}>
                               {band.mode}
                             </span>
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-400">
+                          <td className="results-table-cell results-table-muted-text">
                             {band.geoArea}
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-400">
+                          <td className="results-table-cell results-table-muted-text">
                             {band.release}
                           </td>
                         </tr>
@@ -485,10 +437,10 @@ export function BandInfo() {
         )}
 
         {!isLoading && !error && !hasSearched && (
-          <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 flex items-center justify-center p-12">
-            <div className="text-center text-gray-400 dark:text-gray-500">
+          <div className="initial-search-container">
+            <div className="initial-search-content">
               <svg
-                className="w-16 h-16 mx-auto mb-4 text-gray-300 dark:text-gray-600"
+                className="search-icon"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -500,7 +452,7 @@ export function BandInfo() {
                   d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
                 />
               </svg>
-              <p>Enter search criteria</p>
+              <p className="search-prompt">Enter search criteria</p>
             </div>
           </div>
         )}
@@ -511,105 +463,96 @@ export function BandInfo() {
         <>
           {/* Overlay with backdrop blur */}
           <div 
-            className="fixed inset-0 z-40 backdrop-blur-[2px]"
-            style={{ backgroundColor: 'rgba(0, 0, 0, 0.05)' }}
+            className="sidebar-overlay"
             onClick={closeSidebar}
           />
           
           {/* Sidebar */}
           <div 
-            className="fixed right-0 top-0 bottom-0 bg-white dark:bg-gray-800 shadow-2xl z-50 overflow-auto"
+            className="sidebar-panel"
             style={{ width: `${sidebarWidth}px` }}
           >
             {/* Resize Handle */}
             <div
-              className="absolute left-0 top-0 bottom-0 w-1 cursor-ew-resize hover:bg-blue-500 active:bg-blue-600 transition-colors group"
+              className="sidebar-resize-handle group"
               onMouseDown={() => setIsResizing(true)}
             >
-              <div className="absolute left-0 top-0 bottom-0 w-1 bg-gray-300 dark:bg-gray-600 group-hover:bg-blue-400" />
+              <div className="sidebar-resize-line" />
             </div>
 
             {/* Header */}
-            <div className="sticky top-0 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 p-6 flex items-start justify-between">
+            <div className="sidebar-header">
               <div>
-                <div className="flex items-center gap-3 mb-2">
-                  <span className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200">
+                <div className="sidebar-badges">
+                  <span className="sidebar-badge">
                     {selectedBandDetails!.band}
                   </span>
-                  <span
-                    className={`inline-flex items-center px-3 py-1 rounded-full text-sm ${
-                      selectedBandDetails!.mode === 'FDD'
-                        ? 'bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200'
-                        : 'bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200'
-                    }`}
-                  >
+                  <span className={`sidebar-badge ${selectedBandDetails!.mode === 'FDD' ? 'sidebar-badge-fdd' : 'sidebar-badge-tdd'}`}>
                     {selectedBandDetails!.mode}
                   </span>
                 </div>
-                <h3 className="text-gray-900 dark:text-gray-100 text-xl">{selectedBandDetails!.bandName}</h3>
+                <h3 className="sidebar-title">{selectedBandDetails!.bandName}</h3>
               </div>
               <button
                 onClick={closeSidebar}
-                className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
+                className="sidebar-close-button"
               >
-                <svg className="w-5 h-5 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="sidebar-close-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </button>
             </div>
 
             {/* Details */}
-            <div className="p-6 space-y-4">
+            <div className="sidebar-content">
               {/* Frequency Ranges Table */}
-              <div>
-                <label className="block text-sm text-gray-500 dark:text-gray-400 mb-2">Frequency Ranges (MHz)</label>
-                <div className="border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
-                  <table className="w-full text-sm">
-                    <thead className="bg-gray-50 dark:bg-gray-700">
-                      <tr>
-                        <th className="px-3 py-2 text-left text-xs text-gray-600 dark:text-gray-400"></th>
-                        <th className="px-3 py-2 text-left text-xs text-gray-600 dark:text-gray-400">Low</th>
-                        <th className="px-3 py-2 text-left text-xs text-gray-600 dark:text-gray-400">Centre</th>
-                        <th className="px-3 py-2 text-left text-xs text-gray-600 dark:text-gray-400">High</th>
-                      </tr>
-                    </thead>
-                    <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-                      <tr>
-                        <td className="px-3 py-2 text-gray-700 dark:text-gray-300">DL</td>
-                        <td className="px-3 py-2 text-gray-900 dark:text-gray-100">{selectedBandDetails!.dlFreqRange.low}</td>
-                        <td className="px-3 py-2 text-gray-900 dark:text-gray-100">{selectedBandDetails!.dlFreqRange.centre}</td>
-                        <td className="px-3 py-2 text-gray-900 dark:text-gray-100">{selectedBandDetails!.dlFreqRange.high}</td>
-                      </tr>
-                      <tr>
-                        <td className="px-3 py-2 text-gray-700 dark:text-gray-300">UL</td>
-                        <td className="px-3 py-2 text-gray-900 dark:text-gray-100">{selectedBandDetails!.ulFreqRange.low}</td>
-                        <td className="px-3 py-2 text-gray-900 dark:text-gray-100">{selectedBandDetails!.ulFreqRange.centre}</td>
-                        <td className="px-3 py-2 text-gray-900 dark:text-gray-100">{selectedBandDetails!.ulFreqRange.high}</td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
+              <div className="sidebar-section">
+                <label className="sidebar-section-label">Frequency Ranges (MHz)</label>
+                <table className="freq-table">
+                  <thead className="freq-table-head">
+                    <tr>
+                      <th className="freq-table-header-cell"></th>
+                      <th className="freq-table-header-cell">Low</th>
+                      <th className="freq-table-header-cell">Centre</th>
+                      <th className="freq-table-header-cell">High</th>
+                    </tr>
+                  </thead>
+                  <tbody className="freq-table-body">
+                    <tr className="freq-table-row">
+                      <td className="freq-table-cell freq-table-label">DL</td>
+                      <td className="freq-table-cell">{selectedBandDetails!.dlFreqRange.low}</td>
+                      <td className="freq-table-cell">{selectedBandDetails!.dlFreqRange.centre}</td>
+                      <td className="freq-table-cell">{selectedBandDetails!.dlFreqRange.high}</td>
+                    </tr>
+                    <tr className="freq-table-row">
+                      <td className="freq-table-cell freq-table-label">UL</td>
+                      <td className="freq-table-cell">{selectedBandDetails!.ulFreqRange.low}</td>
+                      <td className="freq-table-cell">{selectedBandDetails!.ulFreqRange.centre}</td>
+                      <td className="freq-table-cell">{selectedBandDetails!.ulFreqRange.high}</td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
 
               {/* Metadata Grid */}
-              <div className="grid grid-cols-2 gap-3">
-                <div className="border border-gray-200 dark:border-gray-700 rounded-lg p-3">
-                  <div className="text-xs text-gray-500 dark:text-gray-400 mb-1">Geographic Area</div>
-                  <div className="text-sm text-gray-900 dark:text-gray-100">{selectedBandDetails!.geoArea}</div>
+              <div className="metadata-grid">
+                <div className="metadata-card">
+                  <div className="metadata-card-label">Geographic Area</div>
+                  <div className="metadata-card-value">{selectedBandDetails!.geoArea}</div>
                 </div>
                 
-                <div className="border border-gray-200 dark:border-gray-700 rounded-lg p-3">
-                  <div className="text-xs text-gray-500 dark:text-gray-400 mb-1">3GPP Release</div>
-                  <div className="text-sm text-gray-900 dark:text-gray-100">Release {selectedBandDetails!.release}</div>
+                <div className="metadata-card">
+                  <div className="metadata-card-label">3GPP Release</div>
+                  <div className="metadata-card-value">Release {selectedBandDetails!.release}</div>
                 </div>
               </div>
 
               {/* SCS */}
-              <div className="border border-gray-200 dark:border-gray-700 rounded-lg p-3">
-                <div className="text-xs text-gray-500 dark:text-gray-400 mb-2">Subcarrier Spacing (kHz)</div>
-                <div className="flex gap-2 flex-wrap">
+              <div className="sidebar-section">
+                <label className="sidebar-section-label">Subcarrier Spacing (kHz)</label>
+                <div className="scs-badges">
                   {selectedBandDetails!.scs.map((scs) => (
-                    <span key={scs} className="inline-flex items-center px-2.5 py-1 rounded-md text-xs bg-blue-50 dark:bg-blue-900 text-blue-700 dark:text-blue-200 border border-blue-200 dark:border-blue-800">
+                    <span key={scs} className="scs-badge">
                       {scs} kHz
                     </span>
                   ))}
@@ -617,15 +560,15 @@ export function BandInfo() {
               </div>
 
               {/* SCS-Bandwidth Combination */}
-              <div className="border border-gray-200 dark:border-gray-700 rounded-lg p-3">
-                <div className="text-xs text-gray-500 dark:text-gray-400 mb-2">Supported Bandwidths per SCS</div>
-                <div className="space-y-2">
+              <div className="sidebar-section">
+                <label className="sidebar-section-label">Supported Bandwidths per SCS</label>
+                <div className="bandwidth-combos">
                   {selectedBandDetails!.scsBandwidthCombination.map((combo, idx) => (
-                    <div key={idx} className="pb-2 border-b border-gray-100 dark:border-gray-700 last:border-0 last:pb-0">
-                      <div className="text-xs text-gray-700 dark:text-gray-300 mb-1.5">{combo.scs} kHz SCS:</div>
-                      <div className="flex flex-wrap gap-1">
+                    <div key={idx} className="bandwidth-combo">
+                      <div className="bandwidth-combo-label">{combo.scs} kHz SCS:</div>
+                      <div className="bandwidth-list">
                         {combo.bandwidths.map((bw) => (
-                          <span key={bw} className="inline-flex items-center px-2 py-0.5 rounded text-xs bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-600">
+                          <span key={bw} className="bandwidth-badge">
                             {bw}
                           </span>
                         ))}
